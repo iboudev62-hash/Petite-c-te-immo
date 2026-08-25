@@ -1,355 +1,199 @@
-Voici le code complet regroupé dans un seul fichier HTML standalone (index.html). Tu peux copier l'intégralité de ce bloc et le coller directement dans ton fichier sur GitHub.
-Il intègre la bibliothèque FontAwesome pour les icônes, conserve exactement ton design modal existant (fond sombre overlay, conteneur blanc, bouton orange), permet la sélection de fichiers depuis le téléphone/PC, ajoute le champ de détails et contient les fonctionnalités d'interaction (Like, Commentaire, Partage).
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Petite Côte Immo</title>
-  
-  <!-- FontAwesome pour les icônes professionnelles -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petite Côte Immo - Vente et achat de terrains</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: #0f172a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    /* Overlay / Fond sombre de la modale */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      z-index: 1000;
-    }
-
-    /* Boîte de dialogue originale avec ton design */
-    .modal-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 440px;
-      border-radius: 20px;
-      padding: 28px 24px;
-      position: relative;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    /* Bouton fermer X */
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 22px;
-      color: #94a3b8;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    /* Titre principal */
-    .modal-card h2 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 20px;
-    }
-
-    /* Structure des champs avec icône devant */
-    .input-group {
-      position: relative;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 16px;
-      color: #94a3b8;
-      font-size: 16px;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .input-group input, 
-    .input-group textarea {
-      width: 100%;
-      padding: 14px 14px 14px 46px;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #334155;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .input-group input::placeholder, 
-    .input-group textarea::placeholder {
-      color: #94a3b8;
-    }
-
-    .input-group input:focus, 
-    .input-group textarea:focus {
-      border-color: #f59e0b;
-    }
-
-    .input-group textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    /* Label personnalisé pour l'upload de fichiers */
-    .file-upload-label {
-      width: 100%;
-      padding: 14px 14px 14px 46px;
-      border: 1px dashed #cbd5e1;
-      border-radius: 12px;
-      background-color: #f8fafc;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 15px;
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: background-color 0.2s;
-    }
-
-    .file-upload-label:hover {
-      background-color: #f1f5f9;
-    }
-
-    /* Bouton d'action orange original */
-    .submit-btn {
-      width: 100%;
-      background-color: #f59e0b;
-      color: #ffffff;
-      font-weight: 700;
-      border: none;
-      padding: 15px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 17px;
-      margin-top: 8px;
-      transition: background-color 0.2s;
-    }
-
-    .submit-btn:hover {
-      background-color: #d97706;
-    }
-
-    /* Section des interactions style Réseaux Sociaux */
-    .social-section {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid #f1f5f9;
-    }
-
-    .social-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #64748b;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .social-bar {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background: #f8fafc;
-      padding: 10px;
-      border-radius: 12px;
-    }
-
-    .social-btn {
-      background: none;
-      border: none;
-      color: #64748b;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .social-btn:hover {
-      background-color: #e2e8f0;
-      color: #1e293b;
-    }
-
-    .social-btn.liked {
-      color: #ef4444;
-    }
-
-    .social-btn.liked i {
-      font-weight: 900;
-    }
+    .slide { transition: opacity 1.5s ease-in-out; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
 
-  <!-- MODALE PRINCIPALE -->
-  <div class="modal-overlay">
-    <div class="modal-card">
-      <span class="close-btn">&times;</span>
-      <h2>Publier un terrain</h2>
-      
-      <form id="publishForm">
-        <!-- Champ Fichier (Image / Vidéo local) -->
-        <div class="input-group">
-          <i class="fas fa-camera input-icon"></i>
-          <input type="file" id="mediaFile" accept="image/*,video/*" required style="display: none;" onchange="handleFileSelect(this)">
-          <label for="mediaFile" class="file-upload-label" id="fileLabel">
-            Choisir une image ou vidéo...
-          </label>
-        </div>
+  <!-- Entête avec Slider -->
+  <header class="relative bg-slate-900 text-white min-h-[65vh] flex flex-col justify-between overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-100" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
 
-        <!-- Superficie -->
-        <div class="input-group">
-          <i class="fas fa-ruler-combined input-icon"></i>
-          <input type="number" placeholder="Superficie (m²)" required>
-        </div>
-
-        <!-- Localisation -->
-        <div class="input-group">
-          <i class="fas fa-map-marker-alt input-icon"></i>
-          <input type="text" placeholder="Localisation (ex: Somone)" required>
-        </div>
-
-        <!-- Prix -->
-        <div class="input-group">
-          <i class="fas fa-tag input-icon"></i>
-          <input type="number" placeholder="Prix (FCFA)" required>
-        </div>
-
-        <!-- Numéro WhatsApp -->
-        <div class="input-group">
-          <i class="fab fa-whatsapp input-icon"></i>
-          <input type="tel" placeholder="Numéro WhatsApp (ex: 221770000000)" required>
-        </div>
-
-        <!-- Nouveau champ : Détails du terrain -->
-        <div class="input-group">
-          <i class="fas fa-align-left input-icon"></i>
-          <textarea rows="3" placeholder="Détails du terrain (ex: Titre foncier, accès eau/électricité, terrain d'angle...)" required></textarea>
-        </div>
-
-        <button type="submit" class="submit-btn">Publier</button>
-      </form>
-
-      <!-- EXEMPLE DE BARRE DE SOCIAL FEED (Boutons Aimer, Commenter, Partager) -->
-      <div class="social-section">
-        <div class="social-title">Aperçu interactions visiteurs</div>
-        <div class="social-bar">
-          <button class="social-btn" id="likeBtn" onclick="toggleLike()">
-            <i class="far fa-heart"></i>
-            <span id="likeCount">0</span>
-          </button>
-
-          <button class="social-btn" onclick="openComments()">
-            <i class="far fa-comment"></i>
-            <span>Commenter</span>
-          </button>
-
-          <button class="social-btn" onclick="sharePost()">
-            <i class="fas fa-share"></i>
-            <span>Partager</span>
-          </button>
-        </div>
+    <!-- Navigation -->
+    <nav class="relative z-10 max-w-7xl mx-auto w-full px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-amber-400">Petite Côte Immo</h1>
+      <div id="nav-actions" class="flex gap-3">
+        <button onclick="openModal('login-modal')" class="px-4 py-2 bg-slate-800/80 border border-amber-400/30 rounded-lg text-sm font-semibold hover:bg-slate-700 transition">Se connecter</button>
+        <button onclick="openModal('signup-modal')" class="px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold hover:bg-amber-600 transition">S'inscrire</button>
       </div>
+    </nav>
 
+    <!-- Hero Section -->
+    <div class="relative z-10 max-w-4xl mx-auto text-center px-6 my-auto py-12">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4">Petite Côte Immo</h2>
+      <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+        Vendre et acheter vos terrains de rêves via petite côte immo, un site bien sécurisé.
+      </p>
+      <button onclick="handlePublishClick()" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105">
+        <i class="fa-solid fa-plus-circle mr-2"></i> Publier un terrain
+      </button>
+    </div>
+  </header>
+
+  <!-- Section Terrains -->
+  <main class="max-w-7xl mx-auto px-6 py-12 w-full">
+    <h3 class="text-2xl font-bold text-slate-900 mb-8 border-l-4 border-amber-500 pl-3">Terrains récents</h3>
+    <div id="terrains-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </main>
+
+  <!-- Modals -->
+  <div id="signup-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-md w-full relative">
+      <button onclick="closeModal('signup-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Créer un compte courtier</h3>
+      <form onsubmit="signup(event)" class="space-y-4">
+        <input type="email" id="signup-email" placeholder="Adresse Email" required class="w-full px-4 py-3 border rounded-lg" />
+        <input type="password" id="signup-password" placeholder="Mot de passe" required class="w-full px-4 py-3 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-amber-500 font-bold rounded-lg">S'inscrire</button>
+      </form>
     </div>
   </div>
 
+  <div id="login-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-md w-full relative">
+      <button onclick="closeModal('login-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Connexion</h3>
+      <form onsubmit="login(event)" class="space-y-4">
+        <input type="email" id="login-email" placeholder="Adresse Email" required class="w-full px-4 py-3 border rounded-lg" />
+        <input type="password" id="login-password" placeholder="Mot de passe" required class="w-full px-4 py-3 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-slate-900 text-white font-bold rounded-lg">Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="publish-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-lg w-full relative">
+      <button onclick="closeModal('publish-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Publier un terrain</h3>
+      <form onsubmit="publishTerrain(event)" class="space-y-4">
+        <input type="url" id="p-media" placeholder="URL Image/Vidéo du terrain" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="number" id="p-superficie" placeholder="Superficie (m²)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="text" id="p-localisation" placeholder="Localisation (ex: Somone)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="number" id="p-prix" placeholder="Prix (FCFA)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="tel" id="p-whatsapp" placeholder="Numéro WhatsApp (ex: 221770000000)" required class="w-full px-4 py-2 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-amber-500 font-bold rounded-lg">Publier</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pied de page -->
+  <footer class="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800">
+    <p class="text-sm font-medium">petite côte immo, site crée par Ndiome pro le spécialiste</p>
+  </footer>
+
   <script>
-    // Affichage du nom du fichier sélectionné dans le label
-    function handleFileSelect(input) {
-      const label = document.getElementById('fileLabel');
-      if (input.files && input.files[0]) {
-        label.innerText = input.files[0].name;
-        label.style.color = '#1e293b';
+    // Slider
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    setInterval(() => {
+      slides[currentSlide].classList.replace('opacity-100', 'opacity-0');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.replace('opacity-0', 'opacity-100');
+    }, 4000);
+
+    // Modals
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Session & Data Store
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+    let terrains = JSON.parse(localStorage.getItem('terrains')) || [
+      { media: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80', superficie: 300, localisation: 'Ngaparou', prix: 15000000, whatsapp: '221770000000' },
+      { media: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80', superficie: 500, localisation: 'Saly', prix: 28000000, whatsapp: '221770000000' }
+    ];
+
+    function updateNav() {
+      const container = document.getElementById('nav-actions');
+      if (currentUser) {
+        container.innerHTML = `
+          <span class="text-amber-200 text-sm self-center font-medium">${currentUser.email}</span>
+          <button onclick="logout()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold">Déconnexion</button>
+        `;
       } else {
-        label.innerText = 'Choisir une image ou vidéo...';
-        label.style.color = '#94a3b8';
+        container.innerHTML = `
+          <button onclick="openModal('login-modal')" class="px-4 py-2 bg-slate-800/80 border border-amber-400/30 rounded-lg text-sm font-semibold">Se connecter</button>
+          <button onclick="openModal('signup-modal')" class="px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold">S'inscrire</button>
+        `;
       }
     }
 
-    // Gestion du Like (Bouton Cœur)
-    let isLiked = false;
-    let likes = 0;
-
-    function toggleLike() {
-      const likeBtn = document.getElementById('likeBtn');
-      const likeCount = document.getElementById('likeCount');
-      const icon = likeBtn.querySelector('i');
-
-      isLiked = !isLiked;
-      if (isLiked) {
-        likes++;
-        likeBtn.classList.add('liked');
-        icon.classList.replace('far', 'fas');
-      } else {
-        likes--;
-        likeBtn.classList.remove('liked');
-        icon.classList.replace('fas', 'far');
-      }
-      likeCount.innerText = likes;
-    }
-
-    // Gestion de la fonction Partager
-    function sharePost() {
-      if (navigator.share) {
-        navigator.share({
-          title: 'Petite Côte Immo',
-          text: 'Découvrez ce terrain sur Petite Côte Immo !',
-          url: window.location.href,
-        }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Lien de l'annonce copié dans le presse-papier !");
-      }
-    }
-
-    // Simulation section commentaire
-    function openComments() {
-      const comment = prompt("Écrivez votre commentaire :");
-      if (comment) {
-        alert("Commentaire ajouté avec succès !");
-      }
-    }
-
-    // Soumission du formulaire
-    document.getElementById('publishForm').addEventListener('submit', function(e) {
+    function signup(e) {
       e.preventDefault();
-      alert("Annonce publiée avec succès !");
-    });
+      currentUser = { email: document.getElementById('signup-email').value };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      closeModal('signup-modal');
+      updateNav();
+    }
+
+    function login(e) {
+      e.preventDefault();
+      currentUser = { email: document.getElementById('login-email').value };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      closeModal('login-modal');
+      updateNav();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      updateNav();
+    }
+
+    function handlePublishClick() {
+      if (currentUser) openModal('publish-modal');
+      else { alert('Veuillez vous connecter pour publier un terrain.'); openModal('login-modal'); }
+    }
+
+    function publishTerrain(e) {
+      e.preventDefault();
+      const item = {
+        media: document.getElementById('p-media').value,
+        superficie: document.getElementById('p-superficie').value,
+        localisation: document.getElementById('p-localisation').value,
+        prix: document.getElementById('p-prix').value,
+        whatsapp: document.getElementById('p-whatsapp').value
+      };
+      terrains.unshift(item);
+      localStorage.setItem('terrains', JSON.stringify(terrains));
+      closeModal('publish-modal');
+      renderTerrains();
+    }
+
+    function renderTerrains() {
+      const grid = document.getElementById('terrains-grid');
+      grid.innerHTML = terrains.map(t => `
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 hover:shadow-xl transition">
+          <img src="${t.media}" alt="Terrain" class="w-full h-48 object-cover" />
+          <div class="p-5">
+            <div class="flex items-center text-slate-500 text-sm mb-2">
+              <i class="fa-solid fa-location-dot text-amber-500 mr-2"></i> ${t.localisation}
+            </div>
+            <p class="text-2xl font-black text-slate-900 mb-3">${Number(t.prix).toLocaleString()} FCFA</p>
+            <div class="text-slate-600 text-sm mb-5 bg-slate-50 p-3 rounded-lg">
+              <i class="fa-solid fa-ruler-combined mr-1 text-slate-400"></i> ${t.superficie} m²
+            </div>
+            <a href="https://wa.me/${t.whatsapp}?text=Bonjour,%20je%20suis%20intéressé%20par%20votre%20terrain%20de%20${t.superficie}m²%20à%20${encodeURIComponent(t.localisation)}" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">
+              <i class="fa-brands fa-whatsapp text-xl"></i> Contacter sur WhatsApp
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    updateNav();
+    renderTerrains();
   </script>
 </body>
 </html>
-
