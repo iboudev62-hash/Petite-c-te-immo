@@ -1,2 +1,200 @@
-HTML generated successfully in index.html
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petite Côte Immo - Vente et achat de terrains</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .slide { transition: opacity 1.5s ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- Entête avec Slider -->
+  <header class="relative bg-slate-900 text-white min-h-[65vh] flex flex-col justify-between overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-100" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80');"></div>
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="relative z-10 max-w-7xl mx-auto w-full px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-amber-400">Petite Côte Immo</h1>
+      <div id="nav-actions" class="flex gap-3">
+        <button onclick="openModal('login-modal')" class="px-4 py-2 bg-slate-800/80 border border-amber-400/30 rounded-lg text-sm font-semibold hover:bg-slate-700 transition">Se connecter</button>
+        <button onclick="openModal('signup-modal')" class="px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold hover:bg-amber-600 transition">S'inscrire</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative z-10 max-w-4xl mx-auto text-center px-6 my-auto py-12">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4">Petite Côte Immo</h2>
+      <p class="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+        Vendre et acheter vos terrains de rêves via petite côte immo, un site bien sécurisé.
+      </p>
+      <button onclick="handlePublishClick()" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105">
+        <i class="fa-solid fa-plus-circle mr-2"></i> Publier un terrain
+      </button>
+    </div>
+  </header>
+
+  <!-- Section Terrains -->
+  <main class="max-w-7xl mx-auto px-6 py-12 w-full">
+    <h3 class="text-2xl font-bold text-slate-900 mb-8 border-l-4 border-amber-500 pl-3">Terrains récents</h3>
+    <div id="terrains-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </main>
+
+  <!-- Modals -->
+  <div id="signup-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-md w-full relative">
+      <button onclick="closeModal('signup-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Créer un compte courtier</h3>
+      <form onsubmit="signup(event)" class="space-y-4">
+        <input type="email" id="signup-email" placeholder="Adresse Email" required class="w-full px-4 py-3 border rounded-lg" />
+        <input type="password" id="signup-password" placeholder="Mot de passe" required class="w-full px-4 py-3 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-amber-500 font-bold rounded-lg">S'inscrire</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="login-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-md w-full relative">
+      <button onclick="closeModal('login-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Connexion</h3>
+      <form onsubmit="login(event)" class="space-y-4">
+        <input type="email" id="login-email" placeholder="Adresse Email" required class="w-full px-4 py-3 border rounded-lg" />
+        <input type="password" id="login-password" placeholder="Mot de passe" required class="w-full px-4 py-3 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-slate-900 text-white font-bold rounded-lg">Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="publish-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl max-w-lg w-full relative">
+      <button onclick="closeModal('publish-modal')" class="absolute top-4 right-4 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-xl font-bold mb-4">Publier un terrain</h3>
+      <form onsubmit="publishTerrain(event)" class="space-y-4">
+        <input type="url" id="p-media" placeholder="URL Image/Vidéo du terrain" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="number" id="p-superficie" placeholder="Superficie (m²)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="text" id="p-localisation" placeholder="Localisation (ex: Somone)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="number" id="p-prix" placeholder="Prix (FCFA)" required class="w-full px-4 py-2 border rounded-lg" />
+        <input type="tel" id="p-whatsapp" placeholder="Numéro WhatsApp (ex: 221770000000)" required class="w-full px-4 py-2 border rounded-lg" />
+        <button type="submit" class="w-full py-3 bg-amber-500 font-bold rounded-lg">Publier</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pied de page -->
+  <footer class="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800">
+    <p class="text-sm font-medium">petite côte immo, site crée par Ndiome pro le spécialiste</p>
+  </footer>
+
+  <script>
+    // Slider
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    setInterval(() => {
+      slides[currentSlide].classList.replace('opacity-100', 'opacity-0');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.replace('opacity-0', 'opacity-100');
+    }, 4000);
+
+    // Modals
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Session & Data Store
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+    let terrains = JSON.parse(localStorage.getItem('terrains')) || [
+      { media: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80', superficie: 300, localisation: 'Ngaparou', prix: 15000000, whatsapp: '221770000000' },
+      { media: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80', superficie: 500, localisation: 'Saly', prix: 28000000, whatsapp: '221770000000' }
+    ];
+
+    function updateNav() {
+      const container = document.getElementById('nav-actions');
+      if (currentUser) {
+        container.innerHTML = `
+          <span class="text-amber-200 text-sm self-center font-medium">${currentUser.email}</span>
+          <button onclick="logout()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold">Déconnexion</button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button onclick="openModal('login-modal')" class="px-4 py-2 bg-slate-800/80 border border-amber-400/30 rounded-lg text-sm font-semibold">Se connecter</button>
+          <button onclick="openModal('signup-modal')" class="px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold">S'inscrire</button>
+        `;
+      }
+    }
+
+    function signup(e) {
+      e.preventDefault();
+      currentUser = { email: document.getElementById('signup-email').value };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      closeModal('signup-modal');
+      updateNav();
+    }
+
+    function login(e) {
+      e.preventDefault();
+      currentUser = { email: document.getElementById('login-email').value };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      closeModal('login-modal');
+      updateNav();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      updateNav();
+    }
+
+    function handlePublishClick() {
+      if (currentUser) openModal('publish-modal');
+      else { alert('Veuillez vous connecter pour publier un terrain.'); openModal('login-modal'); }
+    }
+
+    function publishTerrain(e) {
+      e.preventDefault();
+      const item = {
+        media: document.getElementById('p-media').value,
+        superficie: document.getElementById('p-superficie').value,
+        localisation: document.getElementById('p-localisation').value,
+        prix: document.getElementById('p-prix').value,
+        whatsapp: document.getElementById('p-whatsapp').value
+      };
+      terrains.unshift(item);
+      localStorage.setItem('terrains', JSON.stringify(terrains));
+      closeModal('publish-modal');
+      renderTerrains();
+    }
+
+    function renderTerrains() {
+      const grid = document.getElementById('terrains-grid');
+      grid.innerHTML = terrains.map(t => `
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 hover:shadow-xl transition">
+          <img src="${t.media}" alt="Terrain" class="w-full h-48 object-cover" />
+          <div class="p-5">
+            <div class="flex items-center text-slate-500 text-sm mb-2">
+              <i class="fa-solid fa-location-dot text-amber-500 mr-2"></i> ${t.localisation}
+            </div>
+            <p class="text-2xl font-black text-slate-900 mb-3">${Number(t.prix).toLocaleString()} FCFA</p>
+            <div class="text-slate-600 text-sm mb-5 bg-slate-50 p-3 rounded-lg">
+              <i class="fa-solid fa-ruler-combined mr-1 text-slate-400"></i> ${t.superficie} m²
+            </div>
+            <a href="https://wa.me/${t.whatsapp}?text=Bonjour,%20je%20suis%20intéressé%20par%20votre%20terrain%20de%20${t.superficie}m²%20à%20${encodeURIComponent(t.localisation)}" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">
+              <i class="fa-brands fa-whatsapp text-xl"></i> Contacter sur WhatsApp
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    updateNav();
+    renderTerrains();
+  </script>
+</body>
+</html>
