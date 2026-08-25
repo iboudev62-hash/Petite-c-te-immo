@@ -50,6 +50,12 @@
       color: #f59e0b;
     }
 
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     .btn-publish-header {
       background-color: #f59e0b;
       color: #fff;
@@ -61,6 +67,18 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 14px;
+    }
+
+    .btn-logout {
+      background-color: #ef4444;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
       font-size: 14px;
     }
 
@@ -193,7 +211,6 @@
       margin-bottom: 12px;
     }
 
-    /* Barre sociale sous chaque annonce */
     .social-bar {
       display: flex;
       justify-content: space-around;
@@ -219,11 +236,7 @@
       color: #ef4444;
     }
 
-    .social-btn.liked i {
-      font-weight: 900;
-    }
-
-    /* ================= MODALE PUBLIER UN TERRAIN ================= */
+    /* ================= MODALES (PUBLICATION & AUTH) ================= */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -330,6 +343,19 @@
       font-size: 16px;
       margin-top: 6px;
     }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .auth-switch a {
+      color: #f59e0b;
+      text-decoration: none;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -338,9 +364,12 @@
   <header>
     <div class="nav-container">
       <a href="#" class="logo">Petite Côte <span>Immo</span></a>
-      <button class="btn-publish-header" onclick="toggleModal(true)">
-        <i class="fas fa-plus"></i> Publier un terrain
-      </button>
+      <div class="header-actions">
+        <button class="btn-publish-header" onclick="verifierAccesPublication()">
+          <i class="fas fa-plus"></i> Publier un terrain
+        </button>
+        <button class="btn-logout" id="btnLogout" onclick="deconnecterUtilisateur()">Déconnexion</button>
+      </div>
     </div>
   </header>
 
@@ -366,110 +395,351 @@
   <main class="container">
     <h2 class="section-title">Terrains disponibles</h2>
     
-    <div class="properties-grid">
-      <!-- Exemple Carte Annonce -->
-      <div class="property-card">
-        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Terrain" class="card-img">
-        <div class="card-body">
-          <div class="card-price">15 000 000 FCFA</div>
-          <div class="card-location"><i class="fas fa-map-marker-alt"></i> Somone - 300 m²</div>
-          <p class="card-details-text">Titre foncier individuel, proche de la plage, accès eau et électricité disponibles immédiat.</p>
-          
-          <!-- Bouton WhatsApp conservé -->
-          <a href="https://wa.me/221770000000" class="whatsapp-btn" target="_blank">
-            <i class="fab fa-whatsapp"></i> Contacter sur WhatsApp
-          </a>
-        </div>
-
-        <!-- Réseau Social (Aimer, Commenter, Partager) -->
-        <div class="social-bar">
-          <button class="social-btn" onclick="toggleLike(this)">
-            <i class="far fa-heart"></i>
-            <span class="like-count">0</span>
-          </button>
-          <button class="social-btn" onclick="addComment()">
-            <i class="far fa-comment"></i>
-            <span>Commenter</span>
-          </button>
-          <button class="social-btn" onclick="sharePost()">
-            <i class="fas fa-share"></i>
-            <span>Partager</span>
-          </button>
-        </div>
-      </div>
+    <div class="properties-grid" id="terrains-grid">
+      <!-- Les annonces seront injectées dynamiquement ici depuis Firebase -->
     </div>
   </main>
 
-  <!-- MODALE PUBLIER UN TERRAIN -->
-  <div class="modal-overlay" id="modalOverlay">
+  <!-- MODALE AUTHENTIFICATION / INSCRIPTION -->
+  <div class="modal-overlay" id="authModal">
     <div class="modal-card">
-      <span class="close-btn" onclick="toggleModal(false)">&times;</span>
-      <h2>Publier un terrain</h2>
+      <span class="close-btn" onclick="fermerModales()">&times;</span>
       
-      <form id="publishForm">
-        <!-- 1. Fichier Media (Image / Vidéo) -->
+      <!-- FORMULAIRE INSCRIPTION -->
+      <div id="boxInscription">
+        <h2>Créer un compte</h2>
+        <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Identifiez-vous pour publier votre terrain.</p>
+        
         <div class="input-group">
-          <i class="fas fa-camera input-icon"></i>
-          <input type="file" id="mediaFile" accept="image/*,video/*" required style="display: none;" onchange="handleFileSelect(this)">
-          <label for="mediaFile" class="file-upload-label" id="fileLabel">
-            Choisir une image ou vidéo...
-          </label>
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="reg-prenom" placeholder="Prénom" required>
         </div>
-
-        <!-- 2. Superficie -->
         <div class="input-group">
-          <i class="fas fa-ruler-combined input-icon"></i>
-          <input type="number" placeholder="Superficie (m²)" required>
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="reg-nom" placeholder="Nom" required>
         </div>
-
-        <!-- 3. Localisation -->
-        <div class="input-group">
-          <i class="fas fa-map-marker-alt input-icon"></i>
-          <input type="text" placeholder="Localisation (ex: Somone)" required>
-        </div>
-
-        <!-- 4. Prix -->
-        <div class="input-group">
-          <i class="fas fa-tag input-icon"></i>
-          <input type="number" placeholder="Prix (FCFA)" required>
-        </div>
-
-        <!-- 5. WhatsApp -->
         <div class="input-group">
           <i class="fab fa-whatsapp input-icon"></i>
-          <input type="tel" placeholder="Numéro WhatsApp (ex: 221770000000)" required>
+          <input type="tel" id="reg-whatsapp" placeholder="Numéro WhatsApp (ex: 770000000)" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="reg-password" placeholder="Mot de passe" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="reg-password-confirm" placeholder="Confirmer le mot de passe" required>
         </div>
 
-        <!-- 6. Détails du terrain -->
+        <button type="button" class="submit-btn" onclick="lancerInscription()">S'inscrire</button>
+        <div class="auth-switch">Déjà un compte ? <a href="#" onclick="changerModeAuth('connexion')">Se connecter</a></div>
+      </div>
+
+      <!-- FORMULAIRE CONNEXION -->
+      <div id="boxConnexion" style="display: none;">
+        <h2>Se connecter</h2>
+        <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Connectez-vous avec votre WhatsApp et mot de passe.</p>
+        
+        <div class="input-group">
+          <i class="fab fa-whatsapp input-icon"></i>
+          <input type="tel" id="log-whatsapp" placeholder="Numéro WhatsApp" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="log-password" placeholder="Mot de passe" required>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="lancerConnexion()" style="background-color: #0284c7;">Se connecter</button>
+        <div class="auth-switch">Pas de compte ? <a href="#" onclick="changerModeAuth('inscription')">S'inscrire</a></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODALE PUBLIER UN TERRAIN -->
+  <div class="modal-overlay" id="publishModal">
+    <div class="modal-card">
+      <span class="close-btn" onclick="fermerModales()">&times;</span>
+      <h2>Publier un terrain</h2>
+      
+      <form id="publishForm" onsubmit="publierTerrainFirebase(event)">
+        <div class="input-group">
+          <i class="fas fa-camera input-icon"></i>
+          <input type="file" id="mediaFile" accept="image/*" required style="display: none;" onchange="handleFileSelect(this)">
+          <label for="mediaFile" class="file-upload-label" id="fileLabel">Choisir une image...</label>
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-heading input-icon"></i>
+          <input type="text" id="terrain-titre" placeholder="Titre de l'annonce (ex: Superbe terrain Somone)" required>
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-ruler-combined input-icon"></i>
+          <input type="number" id="terrain-superficie" placeholder="Superficie (m²)" required>
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-map-marker-alt input-icon"></i>
+          <input type="text" id="terrain-localisation" placeholder="Localisation (ex: Somone)" required>
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-tag input-icon"></i>
+          <input type="number" id="terrain-prix" placeholder="Prix (FCFA)" required>
+        </div>
+
         <div class="input-group">
           <i class="fas fa-bars-staggered input-icon"></i>
-          <textarea rows="3" placeholder="Détails du terrain (ex: Titre foncier, accès eau/électricité, terrain d'angle...)" required></textarea>
+          <textarea id="terrain-description" rows="3" placeholder="Détails (ex: Titre foncier, eau/électricité...)" required></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">Publier</button>
+        <button type="submit" class="submit-btn" id="btnSubmitPub">Publier mon terrain</button>
       </form>
     </div>
   </div>
 
+  <!-- SCRIPTS FIREBASE & LOGIQUE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    // Configuration Firebase fournie
+    const firebaseConfig = {
+      apiKey: "AIzaSyA8gUtnrpRAWCzUQHKS_V8RXhUnTvT-G9g",
+      authDomain: "petite-cote-immo.firebaseapp.com",
+      projectId: "petite-cote-immo",
+      storageBucket: "petite-cote-immo.firebasestorage.app",
+      messagingSenderId: "522474944268",
+      appId: "1:522474944268:web:bf6a312327b46805d03b29",
+      measurementId: "G-2R537KT5Q8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    let utilisateurActuel = null;
+
+    // Suivi de l'état de connexion de l'utilisateur
+    onAuthStateChanged(auth, (user) => {
+      utilisateurActuel = user;
+      const btnLogout = document.getElementById('btnLogout');
+      if (user) {
+        btnLogout.style.display = 'block';
+      } else {
+        btnLogout.style.display = 'none';
+      }
+    });
+
+    // 1. GESTION DE L'INSCRIPTION
+    window.lancerInscription = async function() {
+      const prenom = document.getElementById('reg-prenom').value.trim();
+      const nom = document.getElementById('reg-nom').value.trim();
+      const whatsapp = document.getElementById('reg-whatsapp').value.trim().replace(/\D/g, '');
+      const pass = document.getElementById('reg-password').value;
+      const passConfirm = document.getElementById('reg-password-confirm').value;
+
+      if (!prenom || !nom || !whatsapp || !pass) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      if (pass !== passConfirm) {
+        alert("Les mots de passe ne correspondent pas !");
+        return;
+      }
+
+      const emailFictif = `${whatsapp}@petitecoteimmo.com`;
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, emailFictif, pass);
+        await setDoc(doc(db, "utilisateurs", cred.user.uid), {
+          uid: cred.user.uid,
+          prenom: prenom,
+          nom: nom,
+          whatsapp: whatsapp,
+          creeLe: serverTimestamp()
+        });
+
+        alert("Inscription réussie !");
+        fermerModales();
+        document.getElementById('publishModal').classList.add('active');
+      } catch (error) {
+        alert("Erreur d'inscription : " + error.message);
+      }
+    };
+
+    // 2. GESTION DE LA CONNEXION
+    window.lancerConnexion = async function() {
+      const whatsapp = document.getElementById('log-whatsapp').value.trim().replace(/\D/g, '');
+      const pass = document.getElementById('log-password').value;
+
+      if (!whatsapp || !pass) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      const emailFictif = `${whatsapp}@petitecoteimmo.com`;
+
+      try {
+        await signInWithEmailAndPassword(auth, emailFictif, pass);
+        alert("Connexion réussie !");
+        fermerModales();
+        document.getElementById('publishModal').classList.add('active');
+      } catch (error) {
+        alert("Numéro WhatsApp ou mot de passe incorrect.");
+      }
+    };
+
+    // 3. DECONNEXION
+    window.deconnecterUtilisateur = async function() {
+      await signOut(auth);
+      alert("Vous êtes déconnecté.");
+    };
+
+    // 4. VERIFICATION ACCES PUBLICATION
+    window.verifierAccesPublication = function() {
+      if (!utilisateurActuel) {
+        document.getElementById('authModal').classList.add('active');
+      } else {
+        document.getElementById('publishModal').classList.add('active');
+      }
+    };
+
+    // 5. PUBLIER UN TERRAIN DANS FIREBASE
+    window.publierTerrainFirebase = async function(e) {
+      e.preventDefault();
+      if (!utilisateurActuel) {
+        alert("Veuillez vous reconnecter.");
+        return;
+      }
+
+      const btnPub = document.getElementById('btnSubmitPub');
+      btnPub.innerText = "Publication en cours...";
+      btnPub.disabled = true;
+
+      const titre = document.getElementById('terrain-titre').value;
+      const superficie = Number(document.getElementById('terrain-superficie').value);
+      const localisation = document.getElementById('terrain-localisation').value;
+      const prix = Number(document.getElementById('terrain-prix').value);
+      const description = document.getElementById('terrain-description').value;
+      const file = document.getElementById('mediaFile').files[0];
+
+      try {
+        const userDoc = await getDoc(doc(db, "utilisateurs", utilisateurActuel.uid));
+        const userData = userDoc.data();
+
+        let imageUrl = "";
+        if (file) {
+          const storageRef = ref(storage, `terrains/${Date.now()}_${file.name}`);
+          const snap = await uploadBytes(storageRef, file);
+          imageUrl = await getDownloadURL(snap.ref);
+        }
+
+        await addDoc(collection(db, "terrains"), {
+          titre,
+          superficie,
+          localisation,
+          prix,
+          description,
+          imageUrl,
+          whatsapp: userData.whatsapp,
+          vendeur: `${userData.prenom} ${userData.nom}`,
+          creeLe: serverTimestamp()
+        });
+
+        alert("Terrain publié avec succès !");
+        fermerModales();
+        document.getElementById('publishForm').reset();
+        chargerTerrains();
+      } catch (err) {
+        alert("Erreur : " + err.message);
+      } finally {
+        btnPub.innerText = "Publier mon terrain";
+        btnPub.disabled = false;
+      }
+    };
+
+    // 6. CHARGER LES TERRAINS DEPUIS FIRESTORE
+    async function chargerTerrains() {
+      const grid = document.getElementById('terrains-grid');
+      grid.innerHTML = "<p style='grid-column:1/-1; text-align:center;'>Chargement des terrains...</p>";
+
+      try {
+        const q = query(collection(db, "terrains"), orderBy("creeLe", "desc"));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          grid.innerHTML = "<p style='grid-column:1/-1; text-align:center; color:#64748b;'>Aucun terrain publié pour le moment. Soyez le premier !</p>";
+          return;
+        }
+
+        grid.innerHTML = "";
+        snapshot.forEach((docItem) => {
+          const t = docItem.data();
+          const prixFormate = t.prix ? t.prix.toLocaleString() : '';
+          
+          const card = document.createElement('div');
+          card.className = 'property-card';
+          card.innerHTML = `
+            <img src="${t.imageUrl || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80'}" alt="Terrain" class="card-img">
+            <div class="card-body">
+              <div class="card-price">${prixFormate} FCFA</div>
+              <div class="card-location"><i class="fas fa-map-marker-alt"></i> ${t.localisation} - ${t.superficie} m²</div>
+              <p style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px;">${t.titre || ''}</p>
+              <p class="card-details-text">${t.description}</p>
+              
+              <a href="https://wa.me/221${t.whatsapp}" class="whatsapp-btn" target="_blank">
+                <i class="fab fa-whatsapp"></i> Contacter (${t.vendeur})
+              </a>
+            </div>
+            <div class="social-bar">
+              <button class="social-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="like-count">0</span></button>
+              <button class="social-btn" onclick="addComment()"><i class="far fa-comment"></i> Commenter</button>
+              <button class="social-btn" onclick="sharePost()"><i class="fas fa-share"></i> Partager</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Erreur de chargement:", err);
+      }
+    }
+
+    // Charger les terrains au démarrage de la page
+    chargerTerrains();
+  </script>
+
   <script>
-    // Animation du Slider
+    // Animations et utilitaires globaux interface
     const slides = document.querySelectorAll('.slide');
     let currentSlide = 0;
-
     setInterval(() => {
       slides[currentSlide].classList.remove('active');
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');
     }, 4000);
 
-    // Ouverture/Fermeture Modale
-    function toggleModal(show) {
-      const modal = document.getElementById('modalOverlay');
-      modal.classList.toggle('active', show);
+    window.fermerModales = function() {
+      document.getElementById('authModal').classList.remove('active');
+      document.getElementById('publishModal').classList.remove('active');
     }
 
-    // Gestion sélection fichier
-    function handleFileSelect(input) {
+    window.changerModeAuth = function(mode) {
+      if (mode === 'inscription') {
+        document.getElementById('boxInscription').style.display = 'block';
+        document.getElementById('boxConnexion').style.display = 'none';
+      } else {
+        document.getElementById('boxInscription').style.display = 'none';
+        document.getElementById('boxConnexion').style.display = 'block';
+      }
+    }
+
+    window.handleFileSelect = function(input) {
       const label = document.getElementById('fileLabel');
       if (input.files && input.files[0]) {
         label.innerText = input.files[0].name;
@@ -477,12 +747,10 @@
       }
     }
 
-    // Interactions Réseaux Sociaux
-    function toggleLike(btn) {
+    window.toggleLike = function(btn) {
       const countSpan = btn.querySelector('.like-count');
       const icon = btn.querySelector('i');
       let likes = parseInt(countSpan.innerText);
-
       if (btn.classList.contains('liked')) {
         btn.classList.remove('liked');
         icon.classList.replace('fas', 'far');
@@ -494,21 +762,17 @@
       }
     }
 
-    function addComment() {
+    window.addComment = function() {
       const text = prompt("Ajoutez votre commentaire :");
       if (text) alert("Commentaire publié !");
     }
 
-    function sharePost() {
+    window.sharePost = function() {
       if (navigator.share) {
-        navigator.share({
-          title: 'Petite Côte Immo',
-          text: 'Regarde ce terrain !',
-          url: window.location.href
-        });
+        navigator.share({ title: 'Petite Côte Immo', url: window.location.href });
       } else {
         navigator.clipboard.writeText(window.location.href);
-        alert('Lien copié dans le presse-papier !');
+        alert('Lien copié !');
       }
     }
   </script>
