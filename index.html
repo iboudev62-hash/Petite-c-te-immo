@@ -1,18 +1,22 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Petite Côte Immo</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
@@ -230,6 +234,50 @@
       color: #ef4444;
     }
 
+    .comments-box {
+      padding: 12px 16px;
+      border-top: 1px solid #f1f5f9;
+      display: none;
+    }
+
+    .comments-box.active {
+      display: block;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .comment-form input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .comment-form button {
+      border: none;
+      background: #0284c7;
+      color: #fff;
+      border-radius: 9px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .comment-item {
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .comment-author {
+      font-weight: 700;
+      margin-right: 5px;
+    }
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -410,765 +458,2189 @@
 </head>
 
 <body>
-  <header>
-    <div class="nav-container">
-      <a href="#" class="logo">Petite Côte <span>Immo</span></a>
 
-      <div class="header-actions">
-        <button class="btn-publish-header" onclick="verifierAccesPublication()">
-          <i class="fas fa-plus"></i> Publier un terrain
-        </button>
-        <button class="btn-logout" id="btnLogout" onclick="deconnecterUtilisateur()">
-          Déconnexion
-        </button>
-      </div>
+<header>
+  <div class="nav-container">
+
+    <a href="#" class="logo">
+      Petite Côte <span>Immo</span>
+    </a>
+
+    <div class="header-actions">
+
+      <button
+        class="btn-publish-header"
+        onclick="verifierAccesPublication()">
+        <i class="fas fa-plus"></i>
+        Publier un terrain
+      </button>
+
+      <button
+        class="btn-logout"
+        id="btnLogout"
+        onclick="deconnecterUtilisateur()">
+        Déconnexion
+      </button>
+
     </div>
-  </header>
+  </div>
+</header>
 
-  <section class="hero-slider">
-    <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80');">
-      <div class="slide-overlay"></div>
-      <div class="slide-content">
-        <h1>Trouvez votre terrain idéal</h1>
-        <p>Les plus belles opportunités sur la Petite Côte du Sénégal</p>
-      </div>
+
+<section class="hero-slider">
+
+  <div
+    class="slide active"
+    style="background-image:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80');">
+
+    <div class="slide-overlay"></div>
+
+    <div class="slide-content">
+      <h1>Trouvez votre terrain idéal</h1>
+
+      <p>
+        Les plus belles opportunités sur la Petite Côte du Sénégal
+      </p>
     </div>
+  </div>
 
-    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80');">
-      <div class="slide-overlay"></div>
-      <div class="slide-content">
-        <h1>Investissez en toute sécurité</h1>
-        <p>Thiafoura, Somone, Guéréo, Saly, Nianing, Ngaparou, Sindia, Diass AIBD et alentours</p>
-      </div>
+
+  <div
+    class="slide"
+    style="background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80');">
+
+    <div class="slide-overlay"></div>
+
+    <div class="slide-content">
+      <h1>Investissez en toute sécurité</h1>
+
+      <p>
+        Thiafoura, Somone, Guéréo, Saly, Nianing, Ngaparou,
+        Sindia, Diass AIBD et alentours
+      </p>
     </div>
-  </section>
+  </div>
 
-  <main class="container">
-    <h2 class="section-title">Terrains disponibles</h2>
-    <div class="properties-grid" id="terrains-grid">
-      <p class="loading-message">Chargement des terrains...</p>
-    </div>
-  </main>
+</section>
 
-  <!-- AUTHENTIFICATION -->
-  <div class="modal-overlay" id="authModal">
-    <div class="modal-card">
-      <span class="close-btn" onclick="fermerModales()">&times;</span>
 
-      <div id="boxInscription">
-        <h2>Créer un compte</h2>
-        <p style="font-size:13px; color:#64748b; margin-bottom:15px;">
-          Identifiez-vous pour publier votre terrain.
-        </p>
+<main class="container">
 
-        <div class="input-group">
-          <i class="fas fa-user input-icon"></i>
-          <input type="text" id="reg-prenom" placeholder="Prénom" autocomplete="given-name">
-        </div>
+  <h2 class="section-title">
+    Terrains disponibles
+  </h2>
 
-        <div class="input-group">
-          <i class="fas fa-user input-icon"></i>
-          <input type="text" id="reg-nom" placeholder="Nom" autocomplete="family-name">
-        </div>
+  <div
+    class="properties-grid"
+    id="terrains-grid">
 
-        <div class="input-group">
-          <i class="fab fa-whatsapp input-icon"></i>
-          <input type="tel" id="reg-whatsapp" placeholder="WhatsApp (ex: 770000000)" inputmode="numeric">
-        </div>
+    <p class="loading-message">
+      Chargement des terrains...
+    </p>
 
-        <div class="input-group">
-          <i class="fas fa-lock input-icon"></i>
-          <input type="password" id="reg-password" placeholder="Mot de passe" autocomplete="new-password">
-        </div>
+  </div>
 
-        <div class="input-group">
-          <i class="fas fa-lock input-icon"></i>
-          <input type="password" id="reg-password-confirm" placeholder="Confirmer le mot de passe" autocomplete="new-password">
-        </div>
+</main>
 
-        <button type="button" class="submit-btn" id="btnInscription" onclick="lancerInscription()">
-          S'inscrire
-        </button>
 
-        <div class="auth-switch">
-          Déjà un compte ?
-          <a href="#" onclick="changerModeAuth('connexion'); return false;">Se connecter</a>
-        </div>
+<!-- =========================
+     AUTHENTIFICATION
+========================= -->
+
+<div
+  class="modal-overlay"
+  id="authModal">
+
+  <div class="modal-card">
+
+    <span
+      class="close-btn"
+      onclick="fermerModales()">
+      &times;
+    </span>
+
+
+    <!-- INSCRIPTION -->
+
+    <div id="boxInscription">
+
+      <h2>Créer un compte</h2>
+
+      <p style="font-size:13px;color:#64748b;margin-bottom:15px;">
+        Identifiez-vous pour publier votre terrain.
+      </p>
+
+
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+
+        <input
+          type="text"
+          id="reg-prenom"
+          placeholder="Prénom">
       </div>
 
-      <div id="boxConnexion" style="display:none;">
-        <h2>Se connecter</h2>
-        <p style="font-size:13px; color:#64748b; margin-bottom:15px;">
-          Connectez-vous avec votre WhatsApp et votre mot de passe.
-        </p>
 
-        <div class="input-group">
-          <i class="fab fa-whatsapp input-icon"></i>
-          <input type="tel" id="log-whatsapp" placeholder="Numéro WhatsApp" inputmode="numeric">
-        </div>
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
 
-        <div class="input-group">
-          <i class="fas fa-lock input-icon"></i>
-          <input type="password" id="log-password" placeholder="Mot de passe" autocomplete="current-password">
-        </div>
+        <input
+          type="text"
+          id="reg-nom"
+          placeholder="Nom">
+      </div>
 
-        <button type="button" class="submit-btn" id="btnConnexion" onclick="lancerConnexion()" style="background-color:#0284c7;">
+
+      <div class="input-group">
+        <i class="fab fa-whatsapp input-icon"></i>
+
+        <input
+          type="tel"
+          id="reg-whatsapp"
+          placeholder="WhatsApp (ex: 770000000)"
+          inputmode="numeric">
+      </div>
+
+
+      <div class="input-group">
+        <i class="fas fa-lock input-icon"></i>
+
+        <input
+          type="password"
+          id="reg-password"
+          placeholder="Mot de passe"
+          autocomplete="new-password">
+      </div>
+
+
+      <div class="input-group">
+        <i class="fas fa-lock input-icon"></i>
+
+        <input
+          type="password"
+          id="reg-password-confirm"
+          placeholder="Confirmer le mot de passe"
+          autocomplete="new-password">
+      </div>
+
+
+      <button
+        type="button"
+        class="submit-btn"
+        id="btnInscription"
+        onclick="lancerInscription()">
+
+        S'inscrire
+
+      </button>
+
+
+      <div class="auth-switch">
+
+        Déjà un compte ?
+
+        <a
+          href="#"
+          onclick="changerModeAuth('connexion');return false;">
+
           Se connecter
-        </button>
 
-        <div class="auth-switch">
-          Pas de compte ?
-          <a href="#" onclick="changerModeAuth('inscription'); return false;">S'inscrire</a>
-        </div>
+        </a>
+
       </div>
+
     </div>
-  </div>
 
-  <!-- PUBLICATION -->
-  <div class="modal-overlay" id="publishModal">
-    <div class="modal-card">
-      <span class="close-btn" onclick="fermerModales()">&times;</span>
 
-      <h2>Publier un terrain</h2>
+    <!-- CONNEXION -->
 
-      <form id="publishForm" onsubmit="publierTerrainFirebase(event)">
-        <div class="input-group">
-          <i class="fas fa-camera input-icon"></i>
+    <div
+      id="boxConnexion"
+      style="display:none;">
 
-          <!-- Photos ET vidéos -->
-          <input
-            type="file"
-            id="mediaFile"
-            accept="image/*,video/*"
-            required
-            style="display:none;"
-            onchange="handleFileSelect(this)"
-          >
+      <h2>Se connecter</h2>
 
-          <label for="mediaFile" class="file-upload-label" id="fileLabel">
-            Choisir une photo ou une vidéo...
-          </label>
-        </div>
+      <p style="font-size:13px;color:#64748b;margin-bottom:15px;">
+        Connectez-vous avec votre WhatsApp et votre mot de passe.
+      </p>
 
-        <div class="input-group">
-          <i class="fas fa-heading input-icon"></i>
-          <input type="text" id="terrain-titre" placeholder="Titre de l'annonce (ex: Superbe terrain Somone)" required>
-        </div>
 
-        <div class="input-group">
-          <i class="fas fa-ruler-combined input-icon"></i>
-          <input type="number" id="terrain-superficie" placeholder="Superficie (m²)" min="1" required>
-        </div>
+      <div class="input-group">
 
-        <div class="input-group">
-          <i class="fas fa-map-marker-alt input-icon"></i>
-          <input type="text" id="terrain-localisation" placeholder="Localisation (ex: Somone)" required>
-        </div>
+        <i class="fab fa-whatsapp input-icon"></i>
 
-        <div class="input-group">
-          <i class="fas fa-tag input-icon"></i>
-          <input type="number" id="terrain-prix" placeholder="Prix (FCFA)" min="0" required>
-        </div>
+        <input
+          type="tel"
+          id="log-whatsapp"
+          placeholder="Numéro WhatsApp"
+          inputmode="numeric">
 
-        <div class="input-group">
-          <i class="fas fa-bars-staggered input-icon"></i>
-          <textarea id="terrain-description" rows="3" placeholder="Détails (ex: Titre foncier, eau/électricité...)" required></textarea>
-        </div>
+      </div>
 
-        <button type="submit" class="submit-btn" id="btnSubmitPub">
-          Publier mon terrain
-        </button>
-      </form>
+
+      <div class="input-group">
+
+        <i class="fas fa-lock input-icon"></i>
+
+        <input
+          type="password"
+          id="log-password"
+          placeholder="Mot de passe"
+          autocomplete="current-password">
+
+      </div>
+
+
+      <button
+        type="button"
+        class="submit-btn"
+        id="btnConnexion"
+        onclick="lancerConnexion()"
+        style="background-color:#0284c7;">
+
+        Se connecter
+
+      </button>
+
+
+      <div class="auth-switch">
+
+        Pas de compte ?
+
+        <a
+          href="#"
+          onclick="changerModeAuth('inscription');return false;">
+
+          S'inscrire
+
+        </a>
+
+      </div>
+
     </div>
+
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+<!-- =========================
+     PUBLICATION
+========================= -->
 
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      collection,
-      addDoc,
-      getDocs,
-      query,
-      orderBy,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<div
+  class="modal-overlay"
+  id="publishModal">
 
-    import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+  <div class="modal-card">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA8gUtnrpRAWCzUQHKS_V8RXhUnTvT-G9g",
-      authDomain: "petite-cote-immo.firebaseapp.com",
-      projectId: "petite-cote-immo",
-      storageBucket: "petite-cote-immo.firebasestorage.app",
-      messagingSenderId: "522474944268",
-      appId: "1:522474944268:web:bf6a312327b46805d03b29",
-      measurementId: "G-2R537KT5Q8"
-    };
+    <span
+      class="close-btn"
+      onclick="fermerModales()">
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+      &times;
 
-    let utilisateurActuel = null;
+    </span>
 
-    // Normalise un numéro sénégalais en 9 chiffres.
-    // Accepte par exemple : 770000000 ou +221770000000.
-    function normaliserWhatsApp(numero) {
-      let n = String(numero || "").replace(/\D/g, "");
 
-      if (n.startsWith("00221")) {
-        n = n.substring(5);
-      } else if (n.startsWith("221") && n.length === 12) {
-        n = n.substring(3);
-      }
+    <h2>Publier un terrain</h2>
 
-      return n;
+
+    <form
+      id="publishForm"
+      onsubmit="publierTerrainSupabase(event)">
+
+
+      <div class="input-group">
+
+        <i class="fas fa-camera input-icon"></i>
+
+
+        <input
+          type="file"
+          id="mediaFile"
+          accept="image/*,video/*"
+          required
+          style="display:none;"
+          onchange="handleFileSelect(this)">
+
+
+        <label
+          for="mediaFile"
+          class="file-upload-label"
+          id="fileLabel">
+
+          Choisir une photo ou une vidéo...
+
+        </label>
+
+      </div>
+
+
+      <div class="input-group">
+
+        <i class="fas fa-heading input-icon"></i>
+
+        <input
+          type="text"
+          id="terrain-titre"
+          placeholder="Titre de l'annonce"
+          required>
+
+      </div>
+
+
+      <div class="input-group">
+
+        <i class="fas fa-ruler-combined input-icon"></i>
+
+        <input
+          type="number"
+          id="terrain-superficie"
+          placeholder="Superficie (m²)"
+          min="1"
+          required>
+
+      </div>
+
+
+      <div class="input-group">
+
+        <i class="fas fa-map-marker-alt input-icon"></i>
+
+        <input
+          type="text"
+          id="terrain-localisation"
+          placeholder="Localisation (ex: Somone)"
+          required>
+
+      </div>
+
+
+      <div class="input-group">
+
+        <i class="fas fa-tag input-icon"></i>
+
+        <input
+          type="number"
+          id="terrain-prix"
+          placeholder="Prix (FCFA)"
+          min="0"
+          required>
+
+      </div>
+
+
+      <div class="input-group">
+
+        <i class="fas fa-bars-staggered input-icon"></i>
+
+        <textarea
+          id="terrain-description"
+          rows="3"
+          placeholder="Détails : titre foncier, eau, électricité..."
+          required></textarea>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="submit-btn"
+        id="btnSubmitPub">
+
+        Publier mon terrain
+
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+
+<script type="module">
+
+  /*
+   * ==========================================
+   * SUPABASE
+   * ==========================================
+   */
+
+  import {
+    createClient
+  } from "https://esm.sh/@supabase/supabase-js@2";
+
+
+  const SUPABASE_URL =
+    "https://uzuekjyzotavptrrbnoz.supabase.co";
+
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_SSVcnCqh9pNCT6g7z94gPA_gZ3kHt6i";
+
+
+  const supabase =
+    createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  let utilisateurActuel = null;
+
+
+  /*
+   * ==========================================
+   * UTILITAIRES
+   * ==========================================
+   */
+
+  function normaliserWhatsApp(numero) {
+
+    let n =
+      String(numero || "")
+        .replace(/\D/g, "");
+
+
+    if (n.startsWith("00221")) {
+
+      n = n.substring(5);
+
+    } else if (
+      n.startsWith("221") &&
+      n.length === 12
+    ) {
+
+      n = n.substring(3);
+
     }
 
-    function emailTechniqueDepuisWhatsApp(whatsapp) {
-      return `${whatsapp}@petitecoteimmo.com`;
+
+    return n;
+  }
+
+
+  function emailTechniqueDepuisWhatsApp(whatsapp) {
+
+    return `${whatsapp}@petitecoteimmo.com`;
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /*
+   * ==========================================
+   * SESSION
+   * ==========================================
+   */
+
+  async function verifierSession() {
+
+    const {
+      data
+    } = await supabase.auth.getSession();
+
+
+    utilisateurActuel =
+      data?.session?.user || null;
+
+
+    actualiserInterfaceUtilisateur();
+
+
+    if (utilisateurActuel) {
+
+      await chargerTerrains();
+
     }
 
-    function messageErreurFirebase(error) {
-      const code = error?.code || "";
+  }
 
-      const messages = {
-        "auth/email-already-in-use": "Ce numéro possède déjà un compte. Utilisez « Se connecter ».",
-        "auth/invalid-email": "Le numéro WhatsApp fourni n'est pas valide.",
-        "auth/weak-password": "Le mot de passe doit contenir au moins 6 caractères.",
-        "auth/invalid-credential": "Numéro WhatsApp ou mot de passe incorrect.",
-        "auth/user-not-found": "Aucun compte ne correspond à ce numéro.",
-        "auth/wrong-password": "Mot de passe incorrect.",
-        "permission-denied": "Firebase refuse cette opération. Vérifiez les règles Firestore/Storage.",
-        "storage/unauthorized": "Firebase Storage refuse l'envoi du fichier. Vérifiez les règles Storage.",
-        "storage/canceled": "L'envoi du fichier a été annulé.",
-        "storage/unknown": "Une erreur inconnue s'est produite pendant l'envoi du fichier."
-      };
 
-      return messages[code] || error?.message || "Une erreur inconnue s'est produite.";
+  function actualiserInterfaceUtilisateur() {
+
+    const btnLogout =
+      document.getElementById("btnLogout");
+
+
+    if (utilisateurActuel) {
+
+      btnLogout.style.display = "flex";
+
+    } else {
+
+      btnLogout.style.display = "none";
+
     }
 
-    onAuthStateChanged(auth, (user) => {
-      utilisateurActuel = user;
+  }
 
-      const btnLogout = document.getElementById("btnLogout");
 
-      if (user) {
-        btnLogout.style.display = "flex";
-      } else {
-        btnLogout.style.display = "none";
-      }
-    });
+  supabase.auth.onAuthStateChange(
+    async (_event, session) => {
 
-    // INSCRIPTION
-    window.lancerInscription = async function() {
-      const btn = document.getElementById("btnInscription");
+      utilisateurActuel =
+        session?.user || null;
 
-      const prenom = document.getElementById("reg-prenom").value.trim();
-      const nom = document.getElementById("reg-nom").value.trim();
-      const whatsapp = normaliserWhatsApp(document.getElementById("reg-whatsapp").value);
-      const pass = document.getElementById("reg-password").value;
-      const passConfirm = document.getElementById("reg-password-confirm").value;
+      actualiserInterfaceUtilisateur();
 
-      if (!prenom || !nom || !whatsapp || !pass || !passConfirm) {
+    }
+  );
+
+
+  /*
+   * ==========================================
+   * INSCRIPTION
+   * ==========================================
+   */
+
+  window.lancerInscription =
+    async function() {
+
+      const btn =
+        document.getElementById("btnInscription");
+
+
+      const prenom =
+        document.getElementById("reg-prenom")
+          .value.trim();
+
+
+      const nom =
+        document.getElementById("reg-nom")
+          .value.trim();
+
+
+      const whatsapp =
+        normaliserWhatsApp(
+          document.getElementById("reg-whatsapp").value
+        );
+
+
+      const pass =
+        document.getElementById("reg-password").value;
+
+
+      const passConfirm =
+        document.getElementById("reg-password-confirm").value;
+
+
+      if (
+        !prenom ||
+        !nom ||
+        !whatsapp ||
+        !pass ||
+        !passConfirm
+      ) {
+
         alert("Veuillez remplir tous les champs.");
         return;
+
       }
+
 
       if (!/^[0-9]{9}$/.test(whatsapp)) {
-        alert("Entrez un numéro WhatsApp sénégalais valide à 9 chiffres, par exemple : 770000000.");
+
+        alert(
+          "Entrez un numéro WhatsApp sénégalais valide à 9 chiffres."
+        );
+
         return;
+
       }
+
 
       if (pass.length < 6) {
-        alert("Le mot de passe doit contenir au moins 6 caractères.");
+
+        alert(
+          "Le mot de passe doit contenir au moins 6 caractères."
+        );
+
         return;
+
       }
 
+
       if (pass !== passConfirm) {
-        alert("Les mots de passe ne correspondent pas.");
+
+        alert(
+          "Les mots de passe ne correspondent pas."
+        );
+
         return;
+
       }
+
 
       btn.disabled = true;
       btn.innerText = "Création du compte...";
 
+
       try {
-        const emailTechnique = emailTechniqueDepuisWhatsApp(whatsapp);
 
-        const cred = await createUserWithEmailAndPassword(
-          auth,
-          emailTechnique,
-          pass
+        const email =
+          emailTechniqueDepuisWhatsApp(whatsapp);
+
+
+        const {
+          data,
+          error
+        } =
+          await supabase.auth.signUp({
+
+            email,
+
+            password: pass,
+
+            options: {
+
+              data: {
+
+                prenom,
+                nom,
+                whatsapp
+
+              }
+
+            }
+
+          });
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        if (!data.user) {
+
+          throw new Error(
+            "Impossible de créer le compte."
+          );
+
+        }
+
+
+        /*
+         * Création du profil dans notre table.
+         */
+
+        const {
+          error: profilError
+        } =
+          await supabase
+            .from("utilisateurs")
+            .insert({
+
+              uid: data.user.id,
+              prenom,
+              nom,
+              whatsapp
+
+            });
+
+
+        if (profilError) {
+
+          /*
+           * Si Supabase demande une confirmation
+           * d'adresse email, le profil peut être créé
+           * après confirmation.
+           */
+
+          console.error(
+            "Erreur profil :",
+            profilError
+          );
+
+        }
+
+
+        alert(
+          "Compte créé avec succès !"
         );
 
-        // On utilise directement le user retourné par Firebase.
-        // Cela évite un problème de synchronisation avec onAuthStateChanged.
-        utilisateurActuel = cred.user;
 
-        await setDoc(
-          doc(db, "utilisateurs", cred.user.uid),
-          {
-            uid: cred.user.uid,
-            prenom,
-            nom,
-            whatsapp,
-            creeLe: serverTimestamp()
-          }
-        );
+        utilisateurActuel =
+          data.user;
 
-        alert("Inscription réussie ! Vous pouvez maintenant publier votre terrain.");
 
         fermerModales();
-        document.getElementById("publishModal").classList.add("active");
+
+
+        document
+          .getElementById("publishModal")
+          .classList.add("active");
+
 
       } catch (error) {
-        console.error("Erreur inscription :", error);
-        alert("Erreur d'inscription : " + messageErreurFirebase(error));
+
+        console.error(
+          "Erreur inscription :",
+          error
+        );
+
+
+        alert(
+          "Erreur d'inscription : " +
+          (error.message ||
+            "Une erreur est survenue.")
+        );
+
       } finally {
+
         btn.disabled = false;
         btn.innerText = "S'inscrire";
+
       }
+
     };
 
-    // CONNEXION
-    window.lancerConnexion = async function() {
-      const btn = document.getElementById("btnConnexion");
 
-      const whatsapp = normaliserWhatsApp(document.getElementById("log-whatsapp").value);
-      const pass = document.getElementById("log-password").value;
+  /*
+   * ==========================================
+   * CONNEXION
+   * ==========================================
+   */
+
+  window.lancerConnexion =
+    async function() {
+
+      const btn =
+        document.getElementById("btnConnexion");
+
+
+      const whatsapp =
+        normaliserWhatsApp(
+          document.getElementById("log-whatsapp").value
+        );
+
+
+      const pass =
+        document.getElementById("log-password").value;
+
 
       if (!whatsapp || !pass) {
-        alert("Veuillez remplir tous les champs.");
+
+        alert(
+          "Veuillez remplir tous les champs."
+        );
+
         return;
+
       }
 
+
       if (!/^[0-9]{9}$/.test(whatsapp)) {
-        alert("Entrez un numéro WhatsApp sénégalais valide à 9 chiffres.");
+
+        alert(
+          "Entrez un numéro WhatsApp sénégalais valide."
+        );
+
         return;
+
       }
+
 
       btn.disabled = true;
       btn.innerText = "Connexion...";
 
-      try {
-        const emailTechnique = emailTechniqueDepuisWhatsApp(whatsapp);
 
-        const cred = await signInWithEmailAndPassword(
-          auth,
-          emailTechnique,
-          pass
+      try {
+
+        const email =
+          emailTechniqueDepuisWhatsApp(whatsapp);
+
+
+        const {
+          data,
+          error
+        } =
+          await supabase.auth.signInWithPassword({
+
+            email,
+
+            password: pass
+
+          });
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        utilisateurActuel =
+          data.user;
+
+
+        alert(
+          "Connexion réussie !"
         );
 
-        utilisateurActuel = cred.user;
-
-        alert("Connexion réussie !");
 
         fermerModales();
-        document.getElementById("publishModal").classList.add("active");
+
+
+        document
+          .getElementById("publishModal")
+          .classList.add("active");
+
 
       } catch (error) {
-        console.error("Erreur connexion :", error);
-        alert("Erreur de connexion : " + messageErreurFirebase(error));
+
+        console.error(
+          "Erreur connexion :",
+          error
+        );
+
+
+        alert(
+          "Erreur de connexion : " +
+          (error.message ||
+            "Numéro WhatsApp ou mot de passe incorrect.")
+        );
+
       } finally {
+
         btn.disabled = false;
         btn.innerText = "Se connecter";
+
       }
+
     };
 
-    // DECONNEXION
-    window.deconnecterUtilisateur = async function() {
-      try {
-        await signOut(auth);
-        utilisateurActuel = null;
-        alert("Vous êtes déconnecté.");
-      } catch (error) {
-        alert("Erreur de déconnexion : " + messageErreurFirebase(error));
-      }
-    };
 
-    // ACCES PUBLICATION
-    window.verifierAccesPublication = function() {
-      if (!utilisateurActuel) {
-        changerModeAuth("inscription");
-        document.getElementById("authModal").classList.add("active");
-      } else {
-        document.getElementById("publishModal").classList.add("active");
-      }
-    };
+  /*
+   * ==========================================
+   * DECONNEXION
+   * ==========================================
+   */
 
-    // PUBLICATION
-    window.publierTerrainFirebase = async function(e) {
-      e.preventDefault();
+  window.deconnecterUtilisateur =
+    async function() {
 
-      if (!utilisateurActuel) {
-        alert("Votre session n'est plus active. Veuillez vous reconnecter.");
-        fermerModales();
-        document.getElementById("authModal").classList.add("active");
-        return;
-      }
+      const {
+        error
+      } =
+        await supabase.auth.signOut();
 
-      const btnPub = document.getElementById("btnSubmitPub");
 
-      const titre = document.getElementById("terrain-titre").value.trim();
-      const superficie = Number(document.getElementById("terrain-superficie").value);
-      const localisation = document.getElementById("terrain-localisation").value.trim();
-      const prix = Number(document.getElementById("terrain-prix").value);
-      const description = document.getElementById("terrain-description").value.trim();
-      const file = document.getElementById("mediaFile").files[0];
+      if (error) {
 
-      if (!file) {
-        alert("Veuillez sélectionner une photo ou une vidéo.");
-        return;
-      }
-
-      const typesAutorises = ["image/", "video/"];
-      const typeAutorise = typesAutorises.some(type => file.type.startsWith(type));
-
-      if (!typeAutorise) {
-        alert("Seules les photos et les vidéos sont autorisées.");
-        return;
-      }
-
-      // Limite côté navigateur : 50 Mo.
-      if (file.size > 50 * 1024 * 1024) {
-        alert("Le fichier est trop volumineux. Taille maximale : 50 Mo.");
-        return;
-      }
-
-      btnPub.innerText = "Publication en cours...";
-      btnPub.disabled = true;
-
-      try {
-        // 1. Récupérer le profil du vendeur.
-        const userDocRef = doc(db, "utilisateurs", utilisateurActuel.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (!userDoc.exists()) {
-          throw new Error("PROFIL_UTILISATEUR_MANQUANT");
-        }
-
-        const userData = userDoc.data();
-
-        // 2. Envoyer le média dans Storage.
-        const extension = file.name.includes(".")
-          ? file.name.substring(file.name.lastIndexOf(".")).toLowerCase()
-          : "";
-
-        const nomFichier = `${Date.now()}_${crypto.randomUUID()}${extension}`;
-        const storageRef = ref(
-          storage,
-          `terrains/${utilisateurActuel.uid}/${nomFichier}`
+        alert(
+          "Erreur de déconnexion : " +
+          error.message
         );
 
-        let imageUrl = "";
+        return;
 
-        try {
-          const metadata = {
-            contentType: file.type
-          };
+      }
 
-          const snap = await uploadBytes(storageRef, file, metadata);
-          imageUrl = await getDownloadURL(snap.ref);
-        } catch (storageError) {
-          console.error("Erreur Storage :", storageError);
-          throw new Error("STORAGE:" + (storageError?.code || storageError?.message));
-        }
 
-        // 3. Enregistrer l'annonce dans Firestore.
-        try {
-          await addDoc(collection(db, "terrains"), {
-            uid: utilisateurActuel.uid,
-            titre,
-            superficie,
-            localisation,
-            prix,
-            description,
-            imageUrl,
-            mediaType: file.type.startsWith("video/") ? "video" : "image",
-            whatsapp: userData.whatsapp,
-            vendeur: `${userData.prenom || ""} ${userData.nom || ""}`.trim(),
-            creeLe: serverTimestamp()
-          });
-        } catch (firestoreError) {
-          console.error("Erreur Firestore :", firestoreError);
-          throw new Error("FIRESTORE:" + (firestoreError?.code || firestoreError?.message));
-        }
+      utilisateurActuel = null;
 
-        alert("Terrain publié avec succès !");
+
+      alert(
+        "Vous êtes déconnecté."
+      );
+
+    };
+
+
+  /*
+   * ==========================================
+   * ACCES PUBLICATION
+   * ==========================================
+   */
+
+  window.verifierAccesPublication =
+    function() {
+
+      if (!utilisateurActuel) {
+
+        changerModeAuth("inscription");
+
+        document
+          .getElementById("authModal")
+          .classList.add("active");
+
+      } else {
+
+        document
+          .getElementById("publishModal")
+          .classList.add("active");
+
+      }
+
+    };
+
+
+  /*
+   * ==========================================
+   * PUBLICATION TERRAIN
+   * ==========================================
+   */
+
+  window.publierTerrainSupabase =
+    async function(e) {
+
+      e.preventDefault();
+
+
+      if (!utilisateurActuel) {
+
+        alert(
+          "Votre session n'est plus active."
+        );
 
         fermerModales();
-        document.getElementById("publishForm").reset();
 
-        const label = document.getElementById("fileLabel");
-        label.innerText = "Choisir une photo ou une vidéo...";
-        label.style.color = "#94a3b8";
+        document
+          .getElementById("authModal")
+          .classList.add("active");
+
+        return;
+
+      }
+
+
+      const btn =
+        document.getElementById("btnSubmitPub");
+
+
+      const titre =
+        document.getElementById("terrain-titre")
+          .value.trim();
+
+
+      const superficie =
+        Number(
+          document.getElementById(
+            "terrain-superficie"
+          ).value
+        );
+
+
+      const localisation =
+        document.getElementById(
+          "terrain-localisation"
+        ).value.trim();
+
+
+      const prix =
+        Number(
+          document.getElementById(
+            "terrain-prix"
+          ).value
+        );
+
+
+      const description =
+        document.getElementById(
+          "terrain-description"
+        ).value.trim();
+
+
+      const file =
+        document.getElementById(
+          "mediaFile"
+        ).files[0];
+
+
+      if (!file) {
+
+        alert(
+          "Veuillez sélectionner une photo ou une vidéo."
+        );
+
+        return;
+
+      }
+
+
+      const typeAutorise =
+        file.type.startsWith("image/") ||
+        file.type.startsWith("video/");
+
+
+      if (!typeAutorise) {
+
+        alert(
+          "Seules les photos et vidéos sont autorisées."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        file.size >
+        50 * 1024 * 1024
+      ) {
+
+        alert(
+          "Le fichier est trop volumineux. Maximum : 50 Mo."
+        );
+
+        return;
+
+      }
+
+
+      btn.disabled = true;
+      btn.innerText =
+        "Publication en cours...";
+
+
+      try {
+
+        /*
+         * 1. Récupérer le profil
+         */
+
+        const {
+          data: profil,
+          error: profilError
+        } =
+          await supabase
+            .from("utilisateurs")
+            .select("*")
+            .eq(
+              "uid",
+              utilisateurActuel.id
+            )
+            .single();
+
+
+        if (profilError) {
+
+          throw new Error(
+            "PROFIL_UTILISATEUR_MANQUANT"
+          );
+
+        }
+
+
+        /*
+         * 2. Préparer le fichier
+         */
+
+        const extension =
+          file.name.includes(".")
+            ? file.name
+                .substring(
+                  file.name.lastIndexOf(".")
+                )
+                .toLowerCase()
+            : "";
+
+
+        const nomFichier =
+          `${Date.now()}_${crypto.randomUUID()}${extension}`;
+
+
+        const chemin =
+          `${utilisateurActuel.id}/${nomFichier}`;
+
+
+        /*
+         * 3. Upload Storage
+         */
+
+        const {
+          error: uploadError
+        } =
+          await supabase.storage
+            .from("terrains")
+            .upload(
+              chemin,
+              file,
+              {
+
+                contentType: file.type,
+
+                upsert: false
+
+              }
+            );
+
+
+        if (uploadError) {
+
+          throw new Error(
+            "STORAGE:" +
+            uploadError.message
+          );
+
+        }
+
+
+        /*
+         * 4. URL publique
+         */
+
+        const {
+          data: publicData
+        } =
+          supabase.storage
+            .from("terrains")
+            .getPublicUrl(chemin);
+
+
+        const imageUrl =
+          publicData.publicUrl;
+
+
+        /*
+         * 5. Enregistrer le terrain
+         */
+
+        const {
+          error: terrainError
+        } =
+          await supabase
+            .from("terrains")
+            .insert({
+
+              uid:
+                utilisateurActuel.id,
+
+              titre,
+
+              superficie,
+
+              localisation,
+
+              prix,
+
+              description,
+
+              image_url:
+                imageUrl,
+
+              media_type:
+                file.type.startsWith("video/")
+                  ? "video"
+                  : "image",
+
+              whatsapp:
+                profil.whatsapp,
+
+              vendeur:
+                `${profil.prenom || ""} ${profil.nom || ""}`
+                  .trim()
+
+            });
+
+
+        if (terrainError) {
+
+          /*
+           * Suppression du fichier si
+           * l'annonce n'a pas pu être créée.
+           */
+
+          await supabase.storage
+            .from("terrains")
+            .remove([chemin]);
+
+
+          throw new Error(
+            "FIRESTORE:" +
+            terrainError.message
+          );
+
+        }
+
+
+        alert(
+          "Terrain publié avec succès !"
+        );
+
+
+        fermerModales();
+
+
+        document
+          .getElementById("publishForm")
+          .reset();
+
+
+        document
+          .getElementById("fileLabel")
+          .innerText =
+            "Choisir une photo ou une vidéo...";
+
+
+        document
+          .getElementById("fileLabel")
+          .style.color =
+            "#94a3b8";
+
 
         await chargerTerrains();
 
-      } catch (err) {
-        console.error("Erreur publication :", err);
 
-        if (String(err.message).startsWith("STORAGE:")) {
+      } catch (error) {
+
+        console.error(
+          "Erreur publication :",
+          error
+        );
+
+
+        if (
+          String(error.message)
+            .startsWith("STORAGE:")
+        ) {
+
           alert(
-            "Erreur d'envoi du fichier.\n\n" +
-            "Firebase Storage refuse le fichier. Vérifiez les règles Storage."
+            "Supabase Storage refuse l'envoi du fichier.\n\n" +
+            error.message
           );
-        } else if (String(err.message).startsWith("FIRESTORE:")) {
+
+        } else if (
+          String(error.message)
+            .startsWith("FIRESTORE:")
+        ) {
+
           alert(
-            "Le fichier a été envoyé, mais Firebase Firestore refuse l'enregistrement du terrain.\n\n" +
-            "Vérifiez les règles Firestore."
+            "Le fichier a été envoyé mais Supabase refuse l'enregistrement du terrain.\n\n" +
+            error.message
           );
-        } else if (err.message === "PROFIL_UTILISATEUR_MANQUANT") {
+
+        } else if (
+          error.message ===
+          "PROFIL_UTILISATEUR_MANQUANT"
+        ) {
+
           alert(
-            "Votre profil utilisateur n'existe pas dans Firestore.\n\n" +
+            "Votre profil vendeur est introuvable.\n\n" +
             "Déconnectez-vous puis reconnectez-vous."
           );
+
         } else {
-          alert("Erreur : " + messageErreurFirebase(err));
+
+          alert(
+            "Erreur : " +
+            (error.message ||
+              "Une erreur est survenue.")
+          );
+
         }
 
       } finally {
-        btnPub.innerText = "Publier mon terrain";
-        btnPub.disabled = false;
+
+        btn.disabled = false;
+
+        btn.innerText =
+          "Publier mon terrain";
+
       }
+
     };
 
-    // CHARGEMENT DES TERRAINS
-    async function chargerTerrains() {
-      const grid = document.getElementById("terrains-grid");
 
-      grid.innerHTML = '<p class="loading-message">Chargement des terrains...</p>';
+  /*
+   * ==========================================
+   * CHARGER LES TERRAINS
+   * ==========================================
+   */
 
-      try {
-        const q = query(
-          collection(db, "terrains"),
-          orderBy("creeLe", "desc")
+  async function chargerTerrains() {
+
+    const grid =
+      document.getElementById(
+        "terrains-grid"
+      );
+
+
+    grid.innerHTML =
+      '<p class="loading-message">Chargement des terrains...</p>';
+
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("terrains")
+        .select("*")
+        .order(
+          "cree_le",
+          {
+            ascending: false
+          }
         );
 
-        const snapshot = await getDocs(q);
 
-        if (snapshot.empty) {
-          grid.innerHTML = `
-            <p class="empty-message" style="color:#64748b;">
-              Aucun terrain publié pour le moment. Soyez le premier !
-            </p>
-          `;
+    if (error) {
+
+      console.error(
+        "Erreur terrains :",
+        error
+      );
+
+
+      grid.innerHTML = `
+        <div class="error-message">
+          <strong>
+            Impossible de charger les terrains.
+          </strong>
+
+          <br><br>
+
+          ${escapeHtml(error.message)}
+
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+      grid.innerHTML = `
+        <p
+          class="empty-message"
+          style="color:#64748b;">
+
+          Aucun terrain publié pour le moment.
+          Soyez le premier !
+
+        </p>
+      `;
+
+      return;
+
+    }
+
+
+    grid.innerHTML = "";
+
+
+    for (const terrain of data) {
+
+      const card =
+        await creerCarteTerrain(
+          terrain
+        );
+
+
+      grid.appendChild(card);
+
+    }
+
+  }
+
+
+  /*
+   * ==========================================
+   * CREER CARTE TERRAIN
+   * ==========================================
+   */
+
+  async function creerCarteTerrain(t) {
+
+    const card =
+      document.createElement("div");
+
+
+    card.className =
+      "property-card";
+
+
+    const mediaUrl =
+      t.image_url ||
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80";
+
+
+    let media;
+
+
+    if (t.media_type === "video") {
+
+      media = `
+        <video
+          src="${escapeHtml(mediaUrl)}"
+          class="card-video"
+          controls
+          preload="metadata"
+          playsinline>
+        </video>
+      `;
+
+    } else {
+
+      media = `
+        <img
+          src="${escapeHtml(mediaUrl)}"
+          alt="Terrain"
+          class="card-img"
+          loading="lazy">
+      `;
+
+    }
+
+
+    const prixFormate =
+      typeof t.prix === "number"
+        ? t.prix.toLocaleString("fr-FR")
+        : "";
+
+
+    /*
+     * Compter les likes
+     */
+
+    const {
+      count: likesCount
+    } =
+      await supabase
+        .from("likes")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "terrain_id",
+          t.id
+        );
+
+
+    /*
+     * Vérifier si l'utilisateur
+     * actuel a aimé.
+     */
+
+    let userLiked = false;
+
+
+    if (utilisateurActuel) {
+
+      const {
+        data: likeData
+      } =
+        await supabase
+          .from("likes")
+          .select("id")
+          .eq(
+            "terrain_id",
+            t.id
+          )
+          .eq(
+            "uid",
+            utilisateurActuel.id
+          )
+          .maybeSingle();
+
+
+      userLiked =
+        !!likeData;
+
+    }
+
+
+    const heartClass =
+      userLiked
+        ? "fas"
+        : "far";
+
+
+    const likedClass =
+      userLiked
+        ? "liked"
+        : "";
+
+
+    card.innerHTML = `
+
+      ${media}
+
+      <div class="card-body">
+
+        <div class="card-price">
+          ${escapeHtml(prixFormate)} FCFA
+        </div>
+
+
+        <div class="card-location">
+
+          <i class="fas fa-map-marker-alt"></i>
+
+          ${escapeHtml(
+            t.localisation || ""
+          )}
+
+          ${
+            t.superficie
+              ? " - " +
+                escapeHtml(t.superficie) +
+                " m²"
+              : ""
+          }
+
+        </div>
+
+
+        <p
+          style="
+            font-weight:600;
+            font-size:13px;
+            color:#334155;
+            margin-bottom:6px;
+          ">
+
+          ${escapeHtml(t.titre || "")}
+
+        </p>
+
+
+        <p class="card-details-text">
+
+          ${escapeHtml(
+            t.description || ""
+          )}
+
+        </p>
+
+
+        <a
+          href="https://wa.me/221${escapeHtml(
+            t.whatsapp || ""
+          )}"
+          class="whatsapp-btn"
+          target="_blank"
+          rel="noopener noreferrer">
+
+          <i class="fab fa-whatsapp"></i>
+
+          Contacter
+          (${escapeHtml(
+            t.vendeur || "vendeur"
+          )})
+
+        </a>
+
+      </div>
+
+
+      <div class="social-bar">
+
+        <button
+          class="social-btn ${likedClass}"
+          onclick="toggleLike(this, ${t.id})">
+
+          <i class="${heartClass} fa-heart"></i>
+
+          <span class="like-count">
+            ${likesCount || 0}
+          </span>
+
+        </button>
+
+
+        <button
+          class="social-btn"
+          onclick="addComment(${t.id}, this)">
+
+          <i class="far fa-comment"></i>
+
+          Commenter
+
+        </button>
+
+
+        <button
+          class="social-btn"
+          onclick="sharePost(${t.id})">
+
+          <i class="fas fa-share"></i>
+
+          Partager
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="comments-box"
+        id="comments-${t.id}">
+
+        <div class="comment-form">
+
+          <input
+            type="text"
+            placeholder="Votre commentaire..."
+            id="comment-input-${t.id}">
+
+          <button
+            onclick="envoyerCommentaire(${t.id})">
+
+            Envoyer
+
+          </button>
+
+        </div>
+
+
+        <div id="comment-list-${t.id}">
+          Chargement...
+        </div>
+
+      </div>
+
+    `;
+
+
+    return card;
+
+  }
+
+
+  /*
+   * ==========================================
+   * LIKES
+   * ==========================================
+   */
+
+  window.toggleLike =
+    async function(btn, terrainId) {
+
+      if (!utilisateurActuel) {
+
+        alert(
+          "Connectez-vous pour aimer un terrain."
+        );
+
+        return;
+
+      }
+
+
+      const icon =
+        btn.querySelector("i");
+
+
+      const countSpan =
+        btn.querySelector(".like-count");
+
+
+      const {
+        data: existingLike
+      } =
+        await supabase
+          .from("likes")
+          .select("id")
+          .eq(
+            "terrain_id",
+            terrainId
+          )
+          .eq(
+            "uid",
+            utilisateurActuel.id
+          )
+          .maybeSingle();
+
+
+      if (existingLike) {
+
+        const {
+          error
+        } =
+          await supabase
+            .from("likes")
+            .delete()
+            .eq(
+              "id",
+              existingLike.id
+            );
+
+
+        if (error) {
+
+          alert(
+            "Impossible de retirer le like."
+          );
+
           return;
+
         }
 
-        grid.innerHTML = "";
 
-        snapshot.forEach((docItem) => {
-          const t = docItem.data();
-
-          const card = document.createElement("div");
-          card.className = "property-card";
-
-          const mediaUrl = t.imageUrl || "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80";
-
-          const media = t.mediaType === "video"
-            ? `
-              <video
-                src="${escapeHtml(mediaUrl)}"
-                class="card-video"
-                controls
-                preload="metadata"
-                playsinline
-              ></video>
-            `
-            : `
-              <img
-                src="${escapeHtml(mediaUrl)}"
-                alt="Terrain"
-                class="card-img"
-                loading="lazy"
-              >
-            `;
-
-          const prixFormate =
-            typeof t.prix === "number"
-              ? t.prix.toLocaleString("fr-FR")
-              : "";
-
-          card.innerHTML = `
-            ${media}
-
-            <div class="card-body">
-              <div class="card-price">
-                ${escapeHtml(prixFormate)} FCFA
-              </div>
-
-              <div class="card-location">
-                <i class="fas fa-map-marker-alt"></i>
-                ${escapeHtml(t.localisation || "")}
-                ${t.superficie ? " - " + escapeHtml(t.superficie) + " m²" : ""}
-              </div>
-
-              <p style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px;">
-                ${escapeHtml(t.titre || "")}
-              </p>
-
-              <p class="card-details-text">
-                ${escapeHtml(t.description || "")}
-              </p>
-
-              <a
-                href="https://wa.me/221${escapeHtml(t.whatsapp || "")}"
-                class="whatsapp-btn"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i class="fab fa-whatsapp"></i>
-                Contacter (${escapeHtml(t.vendeur || "vendeur")})
-              </a>
-            </div>
-
-            <div class="social-bar">
-              <button class="social-btn" onclick="toggleLike(this)">
-                <i class="far fa-heart"></i>
-                <span class="like-count">0</span>
-              </button>
-
-              <button class="social-btn" onclick="addComment()">
-                <i class="far fa-comment"></i>
-                Commenter
-              </button>
-
-              <button class="social-btn" onclick="sharePost()">
-                <i class="fas fa-share"></i>
-                Partager
-              </button>
-            </div>
-          `;
-
-          grid.appendChild(card);
-        });
-
-      } catch (err) {
-        console.error("Erreur chargement terrains :", err);
-
-        grid.innerHTML = `
-          <div class="error-message">
-            <strong>Impossible de charger les terrains.</strong>
-            <br>
-            Vérifiez les règles Firestore.
-          </div>
-        `;
-      }
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    window.chargerTerrains = chargerTerrains;
-
-    chargerTerrains();
-  </script>
-
-  <script>
-    // Slider
-    const slides = document.querySelectorAll(".slide");
-    let currentSlide = 0;
-
-    if (slides.length > 1) {
-      setInterval(() => {
-        slides[currentSlide].classList.remove("active");
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add("active");
-      }, 4000);
-    }
-
-    window.fermerModales = function() {
-      document.getElementById("authModal").classList.remove("active");
-      document.getElementById("publishModal").classList.remove("active");
-    };
-
-    window.changerModeAuth = function(mode) {
-      if (mode === "inscription") {
-        document.getElementById("boxInscription").style.display = "block";
-        document.getElementById("boxConnexion").style.display = "none";
-      } else {
-        document.getElementById("boxInscription").style.display = "none";
-        document.getElementById("boxConnexion").style.display = "block";
-      }
-    };
-
-    window.handleFileSelect = function(input) {
-      const label = document.getElementById("fileLabel");
-
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const tailleMo = (file.size / (1024 * 1024)).toFixed(1);
-
-        label.innerText = `${file.name} (${tailleMo} Mo)`;
-        label.style.color = "#1e293b";
-      }
-    };
-
-    window.toggleLike = function(btn) {
-      const countSpan = btn.querySelector(".like-count");
-      const icon = btn.querySelector("i");
-      let likes = parseInt(countSpan.innerText || "0");
-
-      if (btn.classList.contains("liked")) {
         btn.classList.remove("liked");
-        icon.classList.replace("fas", "far");
-        countSpan.innerText = Math.max(0, likes - 1);
+
+        icon.classList.replace(
+          "fas",
+          "far"
+        );
+
+
+        countSpan.innerText =
+          Math.max(
+            0,
+            Number(countSpan.innerText) - 1
+          );
+
+
       } else {
+
+        const {
+          error
+        } =
+          await supabase
+            .from("likes")
+            .insert({
+
+              terrain_id: terrainId,
+
+              uid:
+                utilisateurActuel.id
+
+            });
+
+
+        if (error) {
+
+          alert(
+            "Impossible d'ajouter le like."
+          );
+
+          return;
+
+        }
+
+
         btn.classList.add("liked");
-        icon.classList.replace("far", "fas");
-        countSpan.innerText = likes + 1;
+
+        icon.classList.replace(
+          "far",
+          "fas"
+        );
+
+
+        countSpan.innerText =
+          Number(countSpan.innerText) + 1;
+
       }
+
     };
 
-    window.addComment = function() {
-      const text = prompt("Ajoutez votre commentaire :");
 
-      if (text && text.trim()) {
-        alert("Commentaire enregistré localement. Le système de commentaires Firebase pourra être ajouté ensuite.");
+  /*
+   * ==========================================
+   * COMMENTAIRES
+   * ==========================================
+   */
+
+  window.addComment =
+    async function(terrainId, btn) {
+
+      const box =
+        document.getElementById(
+          `comments-${terrainId}`
+        );
+
+
+      box.classList.toggle("active");
+
+
+      if (box.classList.contains("active")) {
+
+        await chargerCommentaires(
+          terrainId
+        );
+
       }
+
     };
 
-    window.sharePost = function() {
+
+  async function chargerCommentaires(
+    terrainId
+  ) {
+
+    const list =
+      document.getElementById(
+        `comment-list-${terrainId}`
+      );
+
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("commentaires")
+        .select("*")
+        .eq(
+          "terrain_id",
+          terrainId
+        )
+        .order(
+          "cree_le",
+          {
+            ascending: true
+          }
+        );
+
+
+    if (error) {
+
+      list.innerHTML =
+        "Impossible de charger les commentaires.";
+
+      return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+      list.innerHTML =
+        '<span style="color:#94a3b8;">Aucun commentaire.</span>';
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      data.map(comment => `
+
+        <div class="comment-item">
+
+          <span class="comment-author">
+
+            Utilisateur
+
+          </span>
+
+          ${escapeHtml(
+            comment.commentaire
+          )}
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  window.envoyerCommentaire =
+    async function(terrainId) {
+
+      if (!utilisateurActuel) {
+
+        alert(
+          "Connectez-vous pour commenter."
+        );
+
+        return;
+
+      }
+
+
+      const input =
+        document.getElementById(
+          `comment-input-${terrainId}`
+        );
+
+
+      const texte =
+        input.value.trim();
+
+
+      if (!texte) {
+
+        alert(
+          "Écrivez un commentaire."
+        );
+
+        return;
+
+      }
+
+
+      const {
+        error
+      } =
+        await supabase
+          .from("commentaires")
+          .insert({
+
+            terrain_id: terrainId,
+
+            uid:
+              utilisateurActuel.id,
+
+            commentaire: texte
+
+          });
+
+
+      if (error) {
+
+        alert(
+          "Impossible d'enregistrer le commentaire."
+        );
+
+        console.error(error);
+
+        return;
+
+      }
+
+
+      input.value = "";
+
+
+      await chargerCommentaires(
+        terrainId
+      );
+
+    };
+
+
+  /*
+   * ==========================================
+   * PARTAGE
+   * ==========================================
+   */
+
+  window.sharePost =
+    async function(terrainId) {
+
+      const url =
+        window.location.href +
+        "#terrain-" +
+        terrainId;
+
+
       if (navigator.share) {
-        navigator.share({
-          title: "Petite Côte Immo",
-          url: window.location.href
-        }).catch(() => {});
-      } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(window.location.href)
-          .then(() => alert("Lien copié !"))
-          .catch(() => alert("Impossible de copier le lien."));
+
+        try {
+
+          await navigator.share({
+
+            title:
+              "Petite Côte Immo",
+
+            text:
+              "Découvrez ce terrain sur Petite Côte Immo",
+
+            url
+
+          });
+
+        } catch (_) {}
+
+      } else if (
+        navigator.clipboard
+      ) {
+
+        try {
+
+          await navigator.clipboard
+            .writeText(url);
+
+          alert(
+            "Lien copié !"
+          );
+
+        } catch (_) {
+
+          alert(url);
+
+        }
+
       } else {
-        alert(window.location.href);
+
+        alert(url);
+
       }
+
     };
-  </script>
+
+
+  /*
+   * ==========================================
+   * INITIALISATION
+   * ==========================================
+   */
+
+  window.chargerTerrains =
+    chargerTerrains;
+
+
+  verifierSession();
+
+
+</script>
+
+
+<script>
+
+  /*
+   * ==========================================
+   * SLIDER
+   * ==========================================
+   */
+
+  const slides =
+    document.querySelectorAll(".slide");
+
+
+  let currentSlide = 0;
+
+
+  if (slides.length > 1) {
+
+    setInterval(() => {
+
+      slides[
+        currentSlide
+      ].classList.remove("active");
+
+
+      currentSlide =
+        (currentSlide + 1) %
+        slides.length;
+
+
+      slides[
+        currentSlide
+      ].classList.add("active");
+
+    }, 4000);
+
+  }
+
+
+  /*
+   * ==========================================
+   * MODALES
+   * ==========================================
+   */
+
+  window.fermerModales =
+    function() {
+
+      document
+        .getElementById("authModal")
+        .classList.remove("active");
+
+
+      document
+        .getElementById("publishModal")
+        .classList.remove("active");
+
+    };
+
+
+  window.changerModeAuth =
+    function(mode) {
+
+      if (
+        mode === "inscription"
+      ) {
+
+        document
+          .getElementById("boxInscription")
+          .style.display =
+            "block";
+
+
+        document
+          .getElementById("boxConnexion")
+          .style.display =
+            "none";
+
+      } else {
+
+        document
+          .getElementById("boxInscription")
+          .style.display =
+            "none";
+
+
+        document
+          .getElementById("boxConnexion")
+          .style.display =
+            "block";
+
+      }
+
+    };
+
+
+  /*
+   * ==========================================
+   * FICHIER
+   * ==========================================
+   */
+
+  window.handleFileSelect =
+    function(input) {
+
+      const label =
+        document.getElementById(
+          "fileLabel"
+        );
+
+
+      if (
+        input.files &&
+        input.files[0]
+      ) {
+
+        const file =
+          input.files[0];
+
+
+        const tailleMo =
+          (
+            file.size /
+            (1024 * 1024)
+          ).toFixed(1);
+
+
+        label.innerText =
+          `${file.name} (${tailleMo} Mo)`;
+
+
+        label.style.color =
+          "#1e293b";
+
+      }
+
+    };
+
+</script>
+
 </body>
 </html>
+```
