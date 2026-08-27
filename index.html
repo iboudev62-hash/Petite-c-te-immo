@@ -416,6 +416,76 @@
       color: #dc2626;
     }
 
+
+
+    /* ==========================================
+       COMMENT ÇA MARCHE
+       ========================================== */
+    .how-it-works {
+      padding: 70px 20px;
+      background: #f8fafc;
+    }
+
+    .how-it-works-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .how-it-works-label {
+      text-align: center;
+      color: #f59e0b;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .how-it-works-title {
+      text-align: center;
+      color: #1e293b;
+      font-size: 42px;
+      line-height: 1.2;
+      font-weight: 800;
+      max-width: 850px;
+      margin: 0 auto 50px;
+    }
+
+    .steps-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 38px 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-number {
+      color: #f59e0b;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+    }
+
+    .step-card h3 {
+      color: #1e293b;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .step-card p {
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
     @media (max-width: 650px) {
       .nav-container {
         align-items: stretch;
@@ -452,6 +522,39 @@
 
       .properties-grid {
         grid-template-columns: 1fr;
+      }
+
+
+      .how-it-works {
+        padding: 55px 18px;
+      }
+
+      .how-it-works-label {
+        font-size: 11px;
+        letter-spacing: 3px;
+      }
+
+      .how-it-works-title {
+        font-size: 30px;
+        margin-bottom: 35px;
+      }
+
+      .steps-list {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .step-card {
+        padding: 30px 26px;
+        border-radius: 20px;
+      }
+
+      .step-card h3 {
+        font-size: 23px;
+      }
+
+      .step-card p {
+        font-size: 16px;
       }
     }
   </style>
@@ -541,6 +644,81 @@
   </div>
 
 </main>
+
+
+<!-- =========================
+     COMMENT ÇA MARCHE
+========================= -->
+
+<section class="how-it-works">
+
+  <div class="how-it-works-container">
+
+    <div class="how-it-works-label">
+      COMMENT ÇA MARCHE
+    </div>
+
+    <h2 class="how-it-works-title">
+      De l'inscription à la poignée de main, en trois étapes
+    </h2>
+
+    <div class="steps-list">
+
+      <article class="step-card">
+
+        <div class="step-number">
+          01
+        </div>
+
+        <h3>Créez votre compte</h3>
+
+        <p>
+          Inscrivez-vous gratuitement avec vos informations personnelles
+          et votre numéro WhatsApp.
+        </p>
+
+      </article>
+
+
+      <article class="step-card">
+
+        <div class="step-number">
+          02
+        </div>
+
+        <h3>Publiez votre terrain</h3>
+
+        <p>
+          Ajoutez une photo ou une vidéo, puis renseignez le titre,
+          la superficie, la localisation, le prix et les détails
+          de votre terrain.
+        </p>
+
+      </article>
+
+
+      <article class="step-card">
+
+        <div class="step-number">
+          03
+        </div>
+
+        <h3>Discutez sur WhatsApp</h3>
+
+        <p>
+          Les acheteurs intéressés peuvent vous contacter directement
+          sur WhatsApp pour échanger facilement et rapidement,
+          sans intermédiaire.
+        </p>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
 
 
 <!-- =========================
@@ -2643,4 +2821,3 @@
 
 </body>
 </html>
-
